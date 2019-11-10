@@ -6,6 +6,7 @@ and csv format.
 ### Overview
 
 30 volunteers (Age Group of 19-48 years) performed 6 different activities while wearing a smartphone.
+The smartphone captured various data about their movements as below.
 ## Activities List
 1) WALKING
 2) WALKING_UPSTAIRS
@@ -13,7 +14,7 @@ and csv format.
 4) SITTING
 5) STANDING
 6) LAYING
-The smartphone captured various data about their movements.
+
 
 ### Explanation of each file
 
