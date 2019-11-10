@@ -5,5 +5,5 @@ The class project for [Getting and Cleaning Data] that captures Human activity o
 ** Set current working directory where you want to setup data and generate tidy data
 ** Note that it requires reshape2,tidyr package to run this script.
 
-**The output of the R script is a tidy data set, stored as tidied_final_data.txt,tidy_final.csv without rownames).**
+**The output of the R script is a tidy data set, stored as tidied_final_data.txt,tidy_final.csv without rownames.**
 
