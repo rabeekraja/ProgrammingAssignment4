@@ -12,17 +12,14 @@
 #average of each variable for each activity and each subject.
 
 # Set current working directory
-#setwd("C:/rlib")
+setwd("C:/rlib")
 #Load Libraries
-# check if reshape2 & tidyr package is installed
-if (!"tidyr" %in% installed.packages()) {
-  install.packages("tidyr")
+# check if plyr package is installed
+if (!"plyr" %in% installed.packages()) {
+  install.packages("plyr")
 }
-if (!"reshape2" %in% installed.packages()) {
-  install.packages("reshape2")
-}
-library("tidyr")
-library("reshape2")
+
+library(plyr)
 ## Data download and unzip 
 # fileName to store in local drive
 fileN <- "UCIDataSets.zip"
@@ -52,17 +49,24 @@ extract_data(fileN,dataUrl,dir)
 ##Data Reading
 #Read test text Data into variables
 subject_test_data <- read.table("UCI HAR Dataset/test/subject_test.txt")
+#print(count(subject_test_data))
 X_test_data <- read.table("UCI HAR Dataset/test/X_test.txt")
+#print(count(X_test_data))
 y_test_data <- read.table("UCI HAR Dataset/test/y_test.txt")
+#print(count(y_test_data))
 #Read training text Data into variables
 subject_train_data <- read.table("UCI HAR Dataset/train/subject_train.txt")
+#print(count(subject_train_data))
 X_train_data <- read.table("UCI HAR Dataset/train/X_train.txt")
+#print(count(X_train_data))
 y_train_data <- read.table("UCI HAR Dataset/train/y_train.txt")
+#print(count(y_train_data))
 #Read labels text Data into variable
 activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt")
+#print(count(activity_labels))
 # Read features
 features <- read.table("UCI HAR Dataset/features.txt")  
-
+#print(count(features))
 ## Data Analysis Steps
 # Step 1. Merge test & training data into single set.
 #rbind here to append all the rows from test and all rows from training 
@@ -71,7 +75,9 @@ mergedDataSet <- rbind(X_train_data,X_test_data)
 
 # Step 2. Extract Mean & Standard Deviation measurements. 
 #  vector of mean,std data.
-mean_Std_Vector <- grep("mean()|std()", features[, 2]) 
+#mean_Std_Vector <- grep("mean()|std()", features[, 2]) 
+mean_Std_Vector <-grep("mean\\(\\)|std\\(\\)", features[, 2])
+#print(mean_Std_Vector)
 mergedDataSet <- mergedDataSet[,mean_Std_Vector]
 
 
@@ -89,7 +95,7 @@ activity <- rbind(y_train_data, y_test_data)
 names(activity) <- 'activity'
 
 # combine subjects, activities, and sub data set to create final data set.
-mergedDataSet <- cbind(subjects,activities, mergedDataSet)
+mergedDataSet <- cbind(subject,activity, mergedDataSet)
 
 
 # 4. Uses descriptive activity names to name the activities in the data set
@@ -98,12 +104,22 @@ activity_group <- factor(mergedDataSet$activity)
 levels(activity_group) <- activity_labels[,2]
 mergedDataSet$activity <- activity_group
 
+names(mergedDataSet)<-gsub("^t", "Time", names(mergedDataSet))
+names(mergedDataSet)<-gsub("^f", "Frequency", names(mergedDataSet))
+names(mergedDataSet)<-gsub("Acc", "Accelerometer", names(mergedDataSet))
+names(mergedDataSet)<-gsub("Gyro", "Gyroscope", names(mergedDataSet))
+names(mergedDataSet)<-gsub("Mag", "Magnitude", names(mergedDataSet))
+names(mergedDataSet)<-gsub("BodyBody", "Body", names(mergedDataSet))
+names(mergedDataSet)<-gsub("[()]", "", names(mergedDataSet))
 
 # 5. tidy data set with the average of each variable. 
 # gather data for subjects, activities. 
-gatheredData <- gather(mergedDataSet,Variable, mean,-subject,-activity)
-nextDataSet  <- dcast(baseData, subject + activity ~ variable, mean)
-names(nextDataSet)[-c(1:2)] <- paste("[mean of]" , names(nextDataSet)[-c(1:2)] )
-# write the tidy data to the current directory as "tidied_final_data.txt,tidy_final_data.csv"
-  write.table(nextDataSet, "tidied_final_data.txt", sep = ",",row.names = FALSE)
-  write.csv(nextDataSet, "tidy_final_data.csv", row.names=FALSE)
+
+
+finalData <- aggregate(. ~subject + activity, mergedDataSet, mean)
+finalData <- tidydata[order(tidydata$subject, tidydata$activity),]
+#print(finalData)
+
+# write the tidy data to the current directory as "tidied_final_data.txt"
+write.table(finalData, "tidied_final_data.txt", sep = ",",row.names = FALSE)
+write.csv(finalData, "tidy_final_data.csv", row.names=FALSE)

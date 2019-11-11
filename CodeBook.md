@@ -36,11 +36,11 @@ The smartphone captured various data about their movements as below.
 This analysis was done using test & train folders at top level data files - Sub folder not used.
 
 ### Processing steps
-Library reshape2 and tidyr were used to tidy the final data.
+Library plyr were used to tidy the final data.
 1. Only relevant data files were read into data frames, column headers were added, and the training and test sets were combined into a single data set as mergedDataSet.
 2. All feature columns were removed that did not contain the exact string "mean()" or "std()". This left 66 feature columns, plus the subjectID and activity columns.
 3. The activity column was converted from a integer to a factor, using labels describing the activities.
 4. A tidy data set was created containing the mean of each feature for each subject and each activity. Thus, subject #1 has 6 rows in the tidy data set (one row for each activity), and each row contains the mean value for each of the 66 features for that subject/activity combination. Since there are 30 subjects, there are a total of 180 rows.
 5. The tidy data set was output to a CSV file and txt file.
 
-Gathered Data got 561 rows and 4 columns of data and then final set have 180 rows and 81 columns of data that is tidy.
+Gathered Data got 561 rows and 4 columns of data and then final set have 180 rows and 68 columns of data that is tidy.
